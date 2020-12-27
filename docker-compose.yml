@@ -1,0 +1,29 @@
+version: '3'
+
+services:
+  db:
+    image: mysql:8.0
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: todo_db
+      MYSQL_USER: docker
+      MYSQL_PASSWORD: docker
+    command: --default-authentication-plugin=mysql_native_password
+    ports:
+      - '3306:3306'
+    volumes:
+      - ./data:/var/lib/mysql
+
+  web:
+    build: .
+    environment:
+      MYSQL_HOST: db
+      MYSQL_USER: docker
+      MYSQL_PASSWORD: docker
+      MYSQL_DB: todo_db
+    depends_on:
+      - db
+    tty: true
+    ports:
+      - '3000:3000'
